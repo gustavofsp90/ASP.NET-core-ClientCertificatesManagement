@@ -1,0 +1,107 @@
+﻿@model CertificatesManager.ViewModels.CertificateViewModel
+
+@{
+	ViewData["Title"] = "Create";
+}
+@section Scripts {
+	<script>
+		window.addEventListener('load', function () {
+			document.getElementById('file').onchange = function () {
+				var fullPath = this.value;
+				if (fullPath) {
+					var startIndex = (fullPath.indexOf('\\') >= 0 ? fullPath.lastIndexOf('\\') : fullPath.lastIndexOf('/'));
+					var filename = fullPath.substring(startIndex);
+					if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
+						filename = filename.substring(1);
+						filename = filename.split('.').slice(0, -1).join('.');
+					}
+					$('#Name').val(filename);
+				}
+			};
+		})
+	</script>
+}
+
+<h2>Create</h2>
+
+<h4>Certificate</h4>
+<hr />
+<div class="row">
+	<div class="col-md-6">
+		@if (TempData["Msg"] != null && TempData["Msg"].ToString().Contains("Error"))
+		{
+			<div class="alert alert-danger" style="margin-top:20px">
+				@TempData["Msg"]
+			</div>
+		}
+			<form asp-action="Create" enctype="multipart/form-data">
+				<div class="form-group">
+					<label asp-for="File">Upload your certificate:</label>
+					<input asp-for="File" type="file" class="form-control" id="file" name="file">
+					<span asp-validation-for="File" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Password" class="control-label">Certificate password</label>
+					<input asp-for="Password" class="form-control" placeholder="Password" />
+					<span asp-validation-for="Password" class="text-danger"></span>
+					<small id="password" class="form-text text-muted">Leave it blank if none</small>
+				</div>
+				<div class="form-group">
+					<label asp-for="Name" class="control-label"></label>
+					<input asp-for="Name" class="form-control" placeholder="Name" />
+					<span asp-validation-for="Name" class="text-danger"></span>
+					<small id="name" class="form-text text-muted">Change if needed</small>
+				</div>
+
+				<div class="form-group">
+					<label asp-for="Location" class="control-label"></label>
+					<input asp-for="Location" class="form-control" placeholder="Location" />
+					<span asp-validation-for="Location" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Applications" class="control-label"></label>
+					<select multiple asp-for="ApplicationIds" class="form-control selectpicker" asp-items="@Model.Applications"></select>
+				</div>
+				<div class="form-group">
+					<label asp-for="Servers" class="control-label"></label>
+					<select multiple asp-for="ServerIds" class="form-control selectpicker" asp-items="@Model.Servers"></select>
+				</div>
+				<div class="form-group">
+					<label asp-for="Groups" class="control-label"></label>
+					<select multiple asp-for="GroupIds" class="form-control selectpicker" asp-items="@Model.Groups"></select>
+				</div>
+				<div class="form-group">
+					<label asp-for="Purpose" class="control-label"></label>
+					<input asp-for="Purpose" class="form-control" placeholder="Purpose" />
+					<span asp-validation-for="Purpose" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="Environment" class="control-label"></label>
+					<select asp-for="Environment" asp-items="Html.GetEnumSelectList<CertificatesManager.Models.Enum.Environment>()" class="form-control selectpicker"></select>
+					<span asp-validation-for="Environment" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="InstallationLink" class="control-label">Installation URL</label>
+					<input asp-for="InstallationLink" class="form-control" placeholder="Installation URL" />
+					<span asp-validation-for="InstallationLink" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label asp-for="OtherInfo" class="control-label">Other information</label>
+					<input asp-for="OtherInfo" class="form-control" placeholder="Other information" />
+					<span asp-validation-for="OtherInfo" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<input asp-for="Active" checked class="form-check-input" />
+					<label asp-for="Active" class="form-check-label">Active</label>
+				</div>
+				<div class="form-group">
+					<input type="submit" value="Create" class="btn btn-primary" />
+				</div>
+			</form>
+	</div>
+</div>
+
+<div>
+	<a asp-action="Index">Back to List</a>
+</div>
+

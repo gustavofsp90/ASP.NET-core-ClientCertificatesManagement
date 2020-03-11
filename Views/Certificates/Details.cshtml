@@ -1,0 +1,267 @@
+﻿@model CertificatesManager.ViewModels.CertificateViewModel
+
+@{
+	ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+	<h4>Certificate</h4>
+	<hr />
+	<div class="alert alert-success" id="emailMsg" style="display:none;" role="alert">
+		The e-mail has been sent successfully.
+	</div>
+	<div class="alert alert-danger" id="emailMsgError" style="display:none;" role="alert">
+		The e-mail has failed to be delivered.
+	</div>
+	<dl class="dl-horizontal">
+		@*<dt>
+				@Html.DisplayNameFor(model => model.Guid)
+			</dt>
+			<dd>
+				@Html.DisplayFor(model => model.Guid)
+			</dd>*@
+		<dt>
+			@Html.DisplayNameFor(model => model.Name)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Name)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Extension)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Extension)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Password)
+		</dt>
+		<dd>
+			<a href="#" data-toggle="modal" data-target="#showPasswordModal">
+				Show password
+			</a>
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.SubjectName)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.SubjectName)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.SerialNumber)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.SerialNumber)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Issuer)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Issuer)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Location)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Location)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Purpose)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Purpose)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Environment)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Environment)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.From)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.From)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.To)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.To)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.InstallationLink)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.InstallationLink)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.OtherInfo)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.OtherInfo)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Servers)
+		</dt>
+		<dd>
+			@for (var i = 0; i < @Model.Servers.Count; i++)
+			{
+				@Html.DisplayFor(model => @Model.Servers[i].Text)
+				if ((i + 1) != @Model.Servers.Count)
+				{
+					@Html.Encode(", ")
+				}
+				else
+				{
+					@Html.Encode(".")
+				}
+			}
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Applications)
+		</dt>
+		<dd>
+			@for (var i = 0; i < @Model.Applications.Count; i++)
+			{
+				@Html.DisplayFor(model => @Model.Applications[i].Text)
+				if ((i + 1) != @Model.Applications.Count)
+				{
+					@Html.Encode(", ")
+				}
+				else
+				{
+					@Html.Encode(".")
+				}
+			}
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Groups)
+		</dt>
+		<dd>
+			@for (var i = 0; i < @Model.Groups.Count; i++)
+			{
+				@Html.DisplayFor(model => @Model.Groups[i].Text)
+				if ((i + 1) != @Model.Groups.Count)
+				{
+					@Html.Encode(", ")
+				}
+				else
+				{
+					@Html.Encode(".")
+				}
+			}
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Active)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Active)
+		</dd>
+	</dl>
+	<div class="form-group">
+		<a asp-action="Download" asp-route-id="@Model.Id" class="btn btn-primary">Download Certificate</a>
+		<button type="button" class="btn btn-default" data-toggle="modal" data-target="#sendEmailModal">
+			Send by e-mail
+		</button>
+	</div>
+
+	<!-- Modal Email -->
+	<div class="modal fade" id="sendEmailModal" tabindex="-1" role="dialog" aria-labelledby="sendEmailModal" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Send e-mail</h5>
+					<button type="button" id="closeModal" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="recipient-name" class="col-form-label">Emails:</label>
+						<input type="email" class="form-control" multiple id="emails" placeholder="use ; for multiple e-mails">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<a id="btnSendEmail" class="btn btn-primary">Send by e-mail</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal Password -->
+	<div class="modal fade" id="showPasswordModal" tabindex="-1" role="dialog" aria-labelledby="showPasswordModal" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Show password</h5>
+					<button type="button" id="closeModal" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="recipient-name" class="col-form-label">Security password:</label>
+						<input type="password" class="form-control" id="passwordConfirmation" placeholder="Security password">
+						<br />
+						<span style="display: none" id="passwordText">The password is:</span>
+						<span style="display: none" id="passwordValue"></span>
+						<span style="display: none" id="invalidPassword">The password is invalid</span>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<a id="btnConfirmPassowrd" class="btn btn-primary">Submit</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+<div>
+	<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+	<a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+	<script>
+		$('#btnSendEmail').click(function () {
+			$('#emailMsg').hide();
+			$('#emailMsgError').hide();
+			$.post('/Certificates/SendEmail',
+					{ id: @Model.Id, emails: $('#emails').val() },
+				function (data, status, jqXHR) {
+					$('#emailMsg').show();
+					$('#closeModal').click();
+				}).fail(function () {
+					$('#emailMsgError').show();
+					$('#closeModal').click();
+				});
+		});
+
+		$('#btnConfirmPassowrd').click(function () {
+			$('#passwordText').hide();
+			$('#passwordValue').hide();
+			$('#invalidPassword').hide();
+
+			$.post('/Certificates/ShowPassword',
+				{ id: @Model.Id, password: $('#passwordConfirmation').val() },
+				function (data, status, jqXHR) {
+					if (data == "N/A")
+						$('#invalidPassword').show();
+					else {
+						if (data == undefined)
+							data = "There is no password for this certificate."
+						else
+							$('#passwordText').show();
+						$('#passwordValue').show();
+						$('#passwordValue').text(data);
+					}
+				}).fail(function () {
+					alert("An unexpected error has occurred");
+				});
+		});
+	</script>
+}

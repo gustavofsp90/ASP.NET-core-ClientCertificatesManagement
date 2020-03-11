@@ -1,0 +1,55 @@
+﻿@model IEnumerable<CertificatesManager.ViewModels.GroupViewModel>
+
+@{
+	ViewData["Title"] = "Index";
+}
+
+<h3>Groups</h3>
+
+<p>
+	<a class="btn btn-primary btn-sm" asp-action="Create">Create New</a>
+</p>
+@if (TempData["Msg"] != null)
+{
+	<div class="alert alert-success" style="margin-top:20px">
+		@TempData["Msg"]
+	</div>
+}
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.Name)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Users)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+		<tr>
+			<td>
+				@Html.DisplayFor(modelItem => item.Name)
+			</td>
+			<td>
+				@for (var i = 0; i < item.Users.Count; i++)
+				{
+					@Html.DisplayFor(model => item.Users[i].Text)
+					if ((i + 1) != item.Users.Count)
+					{
+						@Html.Encode(", ")
+					}
+				}
+			</td>
+			<td>
+				<a class="btn btn-default btn-sm" asp-action="Details" asp-route-id="@item.Id"><span class="glyphicon glyphicon-info-sign"></span></a>
+				<a class="btn btn-default btn-sm" asp-action="Edit" asp-route-id="@item.Id"><span class="glyphicon glyphicon-pencil"></span></a>
+				<a class="btn btn-default btn-sm" asp-action="Delete" asp-route-id="@item.Id"><span class="glyphicon glyphicon-trash"></span></a>
+			</td>
+		</tr>
+		}
+	</tbody>
+</table>

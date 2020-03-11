@@ -1,0 +1,199 @@
+﻿@model IEnumerable<CertificatesManager.ViewModels.CertificateViewModel>
+
+@{
+	ViewData["Title"] = "Index";
+}
+
+<h3>Certificates</h3>
+<a class="btn btn-primary btn-sm" asp-action="Create">Upload</a>
+
+
+@if (TempData["Msg"] != null)
+{
+	<div class="alert alert-success" style="margin-top:20px">
+		@TempData["Msg"]
+	</div>
+}
+
+<table class="table table-bordered" id="table"
+	   data-show-columns="true"
+	   data-search="true"
+	   data-show-toggle="true"
+	   data-pagination="true"
+	   data-resizable-columns-id="demo-table">
+	<thead>
+		<tr>
+			<th data-sortable="true">
+				Id
+			</th>
+			<th data-sortable="true">
+				Name
+			</th>
+			<th data-sortable="true">
+				Ext
+			</th>
+			@*<th data-sortable="true" data-resizable-column-id="password">
+					@Html.DisplayNameFor(model => model.Password)
+				</th>*@
+			<th class="col-sm-1" data-sortable="true" data-visible="false">
+				Subject Name
+			</th>
+			<th class="col-sm-1" data-sortable="true" data-visible="false">
+				Serial Number
+			</th>
+			<th data-sortable="true" data-visible="false">
+				Issuer
+			</th>
+			<th data-sortable="true" data-visible="false">
+				Location
+			</th>
+			<th data-sortable="true" data-visible="false">
+				Purpose
+			</th>
+			<th data-sortable="true">
+				Environment
+			</th>
+			<th class="col-sm-1" data-sortable="true">
+				Valid from
+			</th>
+			<th class="col-sm-1" data-sortable="true">
+				Valid to
+			</th>
+			<th data-sortable="true" data-visible="false">
+				Installation Link
+			</th>
+			<th data-sortable="true" data-visible="false">
+				Servers
+			</th>
+			<th class="col-sm-2" data-sortable="true">
+				Applications
+			</th>
+			<th class="col-sm-2" data-sortable="true">
+				Groups
+			</th>
+			<th data-sortable="true" data-visible="false">
+				Active
+			</th>
+			<th data-sortable="true" data-visible="false">
+				Other infos
+			</th>
+			<th class="col-sm-2">Options</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.Id)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Name)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Extension)
+				</td>
+				@*<td>
+						@Html.DisplayFor(modelItem => item.Password)
+					</td>*@
+				<td>
+					@Html.DisplayFor(modelItem => item.SubjectName)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.SerialNumber)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Issuer)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Location)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Purpose)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Environment)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.From)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.To)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.InstallationLink)
+				</td>
+				<td>
+					@for (var i = 0; i < item.Servers.Count; i++)
+					{
+						@Html.DisplayFor(model => item.Servers[i].Text)
+						if ((i + 1) != item.Servers.Count)
+						{
+							@Html.Encode(", ")
+						}
+					}
+				</td>
+				<td>
+					@for (var i = 0; i < item.Applications.Count; i++)
+					{
+						@Html.DisplayFor(model => item.Applications[i].Text)
+						if ((i + 1) != item.Applications.Count)
+						{
+							@Html.Encode(", ")
+						}
+					}
+				</td>
+				<td>
+					@for (var i = 0; i < item.Groups.Count; i++)
+					{
+						@Html.ActionLink((item.Groups[i].Text), "Details", "Groups", new { id = (item.Groups[i].Value) })
+						if ((i + 1) != item.Groups.Count)
+						{
+							@Html.Encode(", ")
+						}
+					}
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Active)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.OtherInfo)
+				</td>
+				<td>
+					<a class="btn btn-default btn-sm" asp-action="Details" asp-route-id="@item.Id"><span class="glyphicon glyphicon-info-sign"></span></a>
+					<a class="btn btn-default btn-sm" asp-action="Edit" asp-route-id="@item.Id"><span class="glyphicon glyphicon-pencil"></span></a>
+					<a class="btn btn-default btn-sm" asp-action="Delete" asp-route-id="@item.Id"><span class="glyphicon glyphicon-trash"></span></a>
+					<a class="btn btn-default btn-sm" asp-action="Download" asp-route-id="@item.Id"><span class="glyphicon glyphicon-download-alt"></span></a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+@*<p>Show actives only: <input type="checkbox" checked name="activesOnly" id="activesOnly" onclick="filterByActives();" /></p>*@
+
+<div class="form-group row">
+	<div class="col-xs-2">
+		<label for="filter">Filter by:</label>
+		<select class="form-control" id="filter" name="filter" onchange="filter()">
+			<option value="actives">Actives</option>
+			<option value="valids">Valids</option>
+			<option value="all">All</option>
+			<option value="duetoexpire">Due to expire</option>
+			<option value="expired">Expired</option>
+			<option value="inactives">Inactives</option>
+		</select>
+	</div>
+</div>
+
+<script>
+	window.addEventListener('load', function () {
+		$('#table').bootstrapTable();
+		var filterBy = document.location.href.substr((document.location.href.lastIndexOf('?')) + 1).replace('filterBy=', '');
+		$('#filter').val(filterBy);
+	})
+
+	function filter() {
+		window.location = "/certificates/index?filterBy=" + $('#filter').find(":selected").val();
+	}
+
+</script>

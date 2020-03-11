@@ -1,0 +1,91 @@
+﻿@{
+	ViewData["Title"] = "Home Page";
+}
+
+@section Scripts{
+	<script>
+		Highcharts.chart('container', {
+			chart: {
+				plotBackgroundColor: null,
+				plotBorderWidth: 0,
+				plotShadow: false,
+			},
+			title: {
+				text: 'Actives<br> certificates',
+				align: 'center',
+				verticalAlign: 'middle',
+				y: 60
+			},
+			tooltip: {
+				pointFormat: '{series.name}: <b>{point.y:.0f}</b>'
+			},
+			plotOptions: {
+				pie: {
+					dataLabels: {
+						enabled: true,
+						distance: -50,
+						style: {
+							fontWeight: 'bold',
+							color: 'white'
+						}
+					},
+					showInLegend: true,
+					startAngle: -90,
+					endAngle: 90,
+					center: ['50%', '75%'],
+					size: '110%'
+				},
+				series: {
+					cursor: 'pointer',
+					point: {
+						events: {
+							click: function () {
+								location.href = 'certificates/index?filterBy=' +
+									this.options.key;
+							}
+						}
+					}
+				}
+			},
+			series: [{
+				type: 'pie',
+				name: 'Certificates',
+				innerSize: '50%',
+				data: [
+					{
+						name: 'Valid',
+						y: @ViewData["TotalValid"],
+						color: 'green',
+						key: 'valids'
+					},
+					{
+						name: 'Due to expire',
+						y: @ViewData["TotalDueToExpire"],
+						color: 'orange',
+						key: 'duetoexpire'
+					},
+					{
+						name: 'Expired',
+						y: @ViewData["TotalExpired"],
+						color: 'red',
+						key: 'expired'
+					}
+				]
+			}]
+		});
+	</script>
+}
+
+<div class="row">
+	<h3>Dashboard</h3>
+
+	<figure class="highcharts-figure">
+		<div id="container"></div>
+		<p class="highcharts-description">
+			<small>*Certificates due to expire within @ViewData["DueToExpireDays"] days as defined in the application settings.</small>
+		</p>
+	</figure>
+</div>
+
+
+
